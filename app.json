@@ -1,0 +1,19 @@
+{
+  "name": "PrimeSA_Bot",
+  "description": "PrimeSA_Bot - Advanced WhatsApp Multi Device Bot powered by Baileys",
+  "repository": "https://github.com/sahillume/PrimeBot",
+  "keywords": [
+    "whatsapp",
+    "baileys",
+    "bot",
+    "nodejs",
+    "primesa_bot"
+  ],
+  "env": {
+    "SESSION_ID": {
+      "description": "PrimeSA_Bot session string (PrimeSA_Bot!<base64_data>)",
+      "required": false,
+      "value": ""
+    }
+  }
+}
