@@ -130,7 +130,9 @@ Bot goes online
 🔒 Stable session handling
 📡 Easy customization
 🌐 Live Identity Flow
+
 <div align="center"> <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&pause=600&color=00FFFF&center=true&width=900&lines=PrimeSA...;Your+Bot...;Your+Rules...;Professor+Sahil...;Built+for+Developers..." /> </div>
+
 📞 Official Links
 WhatsApp Channel: https://whatsapp.com/channel/0029VbCIUrC4tRrmjdI9QM1x
 YouTube: https://youtube.com/@professorsahil-m7q?si=DXed6qhMosB_JQyL
