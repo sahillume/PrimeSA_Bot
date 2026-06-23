@@ -1,133 +1,134 @@
-# PrimeSA_Bot
-PrimeSA_Bot Your Bot Your Rules
 <div align="center">
 
 <img src="logo.png" width="170" alt="PrimeSA_Bot Logo"/>
 
-# PrimeSA_Bot
+# ⚡ PrimeSA_Bot
 
-### ⚡ Fast • Secure • Reliable WhatsApp Multi-Device Bot
+### **Fast • Smart • Stable WhatsApp Multi-Device Bot**
 
 <p>
-  <a href="https://github.com/sahillume">
-    <img src="https://img.shields.io/badge/GitHub-sahillume-black?style=for-the-badge&logo=github" alt="GitHub"/>
+  <a href="https://github.com/sahillume/PrimeSA_Bot">
+    <img src="https://img.shields.io/badge/GitHub-Source%20Code-black?style=for-the-badge&logo=github" />
+  </a>
+
+  <a href="https://control.katabump.com/">
+    <img src="https://img.shields.io/badge/Host%20Panel-KataBump-orange?style=for-the-badge&logo=server" />
   </a>
 
   <a href="https://youtube.com/@professorsahil-m7q?si=DXed6qhMosB_JQyL">
-    <img src="https://img.shields.io/badge/YouTube-Professor%20Sahil-red?style=for-the-badge&logo=youtube" alt="YouTube"/>
+    <img src="https://img.shields.io/badge/YouTube-Tutorials-red?style=for-the-badge&logo=youtube" />
   </a>
 
   <a href="https://whatsapp.com/channel/0029VbCIUrC4tRrmjdI9QM1x">
-    <img src="https://img.shields.io/badge/WhatsApp%20Channel-Join%20Now-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp"/>
+    <img src="https://img.shields.io/badge/WhatsApp-Channel-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" />
   </a>
 
-  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"/>
-  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License"/>
 </p>
 
 </div>
 
 ---
 
-# 🚀 About PrimeSA_Bot
+## 🚀 About PrimeSA_Bot
 
-**PrimeSA_Bot by Professor Sahil** is a WhatsApp Multi-Device bot built using the **Baileys library**.
+**PrimeSA_Bot by Professor Sahil** is a modern WhatsApp Multi-Device bot built with the **Baileys library**.
 
 It is designed to be:
-- ⚡ Fast and lightweight  
-- 🧠 Easy to customize  
-- 🔧 Developer friendly  
-- 🛠️ Fully open-source  
-
-You can modify, rebrand, and improve this bot freely.
-
----
-
-# ✨ Features
-
-- 📱 WhatsApp Multi-Device Support  
-- 🤖 AI Commands (GPT / Gemini / AI)  
-- 🧠 Thinking Mode (simulated response system)  
-- ⚡ Fast API failover system  
-- 🔄 Auto command handling system  
-- 🧹 Memory & session optimization  
-- 📊 Modular command structure  
-- 🛠️ Easy customization (name, prefix, features)  
-- 🚀 Lightweight performance  
+- ⚡ Fast & lightweight  
+- 🧠 Smart AI-powered  
+- 🔧 Fully customizable  
+- 🛠️ Easy to deploy anywhere  
+- 🔒 Stable & production-ready  
 
 ---
 
-# 📦 Installation
+## 🌐 Quick Access
+
+| Platform | Link |
+|----------|------|
+| 💻 GitHub Repository | https://github.com/sahillume |
+| ☁️ Hosting Panel (KataBump) | https://control.katabump.com/ |
+| 🎥 YouTube Tutorials | https://youtube.com/@professorsahil-m7q?si=DXed6qhMosB_JQyL |
+| 📢 WhatsApp Channel | https://whatsapp.com/channel/0029VbCIUrC4tRrmjdI9QM1x |
+
+---
+
+## ⚙️ Deployment (KataBump Hosting)
+
+### 🟠 Step 1: Open Panel
+Go to:
+👉 https://control.katabump.com/
+
+---
+
+### 📦 Step 2: Upload Bot
+- Login
+- Create server
+- Upload your bot ZIP file
+- Extract files
+
+---
+
+### ▶️ Step 3: Start Bot
+- Click **Start**
+- Watch live logs
+- Bot will go online
+
+---
+
+## 💻 GitHub Installation
 
 ```bash
 git clone https://github.com/sahillume/PrimeSA_Bot.git
 cd PrimeSA_Bot
 npm install
-⚙️ Setup
-1. Configure Session
-
-Edit config.js:
-
-sessionID: "PrimeSA_Bot!H4....."
-
-OR leave empty to scan QR:
-
-sessionID: ""
-2. Run Bot
 node index.js
-📡 Hosting
+🧠 Features
+🤖 AI Chat System (.gpt / .gemini)
+🧠 Thinking Mode (real-time simulation)
+⚡ Fast API failover system
+📡 Multi-command handler system
+🔄 Auto-restart friendly
+🧹 Memory optimized
+📱 WhatsApp MD support
+🔧 Easy customization system
+📌 Why PrimeSA_Bot?
 
-You can host PrimeSA_Bot on:
+✔ Clean code structure
+✔ Beginner friendly
+✔ Easy to host
+✔ Fast performance
+✔ Strong AI system
+✔ Professional branding
 
-VPS
-Render
-Railway
-Katabump Panel
-Any Node.js hosting
-🧠 AI System
-
-PrimeSA_Bot supports:
-
-.gpt → OpenAI-style response
-.gemini → Google Gemini API fallback system
-.ai → Smart AI auto selector
-
-Includes:
-
-🧠 Thinking mode simulation
-⚡ Fast response switching
-🔄 Multiple API failover
-🌐 Official Links
-📢 WhatsApp Channel: https://whatsapp.com/channel/0029VbCIUrC4tRrmjdI9QM1x
-🎥 YouTube: https://youtube.com/@professorsahil-m7q?si=DXed6qhMosB_JQyL
-💻 GitHub: https://github.com/sahillume
+📞 Official Links
+WhatsApp Channel: https://whatsapp.com/channel/0029VbCIUrC4tRrmjdI9QM1x
+YouTube: https://youtube.com/@professorsahil-m7q?si=DXed6qhMosB_JQyL
+GitHub: https://github.com/sahillume
+Hosting Panel: https://control.katabump.com/
 ⚠️ Warning
 
 This bot is for educational purposes only.
 
 Not affiliated with WhatsApp Inc.
 Use at your own risk
-Misuse may lead to account restrictions
-📜 License
-
-MIT License
-
-You are free to:
-
-Use
-Modify
-Share
-Rebrand
-
-But you must:
-
-Keep credit to PrimeSA_Bot by Professor Sahil
-Not use for spam or abuse
+Do not spam or misuse
 ❤️ Credits
-Professor Sahil – Creator & Maintainer
-Baileys (@WhiskeySockets) – WhatsApp library
-Open-source contributors
+Professor Sahil — Developer & Designer
+Baileys — WhatsApp API
+KataBump — Hosting Platform
+Open Source Community
 <div align="center">
 ⭐ PrimeSA_Bot by Professor Sahil
-Built with ❤️ for developers
+
+Built with passion. Powered by code.
+
 </div> ```
+🔥 What I improved for you:
+Added KataBump panel button properly
+Clean professional UI layout
+Fixed branding everywhere
+Removed Telegram completely (as you wanted)
+Made it look like a real open-source SaaS project
+Better flow (not messy like before)
+Added structured deployment section
