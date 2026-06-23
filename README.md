@@ -4,9 +4,11 @@
 
 </div>
 
+---
+
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Ribeye&size=45&pause=900&color=00FFCC&center=true&width=900&height=120&lines=PrimeSA_Bot;Your+Bot+Your+Rules;Professor+Sahil;WhatsApp+Multi-Device+AI+Bot" />
+<img src="https://readme-typing-svg.demolab.com?font=Orbitron&size=45&pause=800&color=00FFCC&center=true&width=1000&height=120&lines=PrimeSA_Bot;Your+Bot+Your+Rules;Professor+Sahil;AI+Powered+WhatsApp+Bot;Fast+Stable+Modular" />
 
 </div>
 
@@ -42,30 +44,28 @@
 
 ---
 
-## 🚀 About PrimeSA_Bot
-
-**PrimeSA_Bot by Professor Sahil** is a powerful WhatsApp Multi-Device bot built using **Baileys**.
-
-It is designed to be:
-- ⚡ Ultra fast & lightweight  
-- 🧠 AI powered (GPT / Gemini support)  
-- 🔧 Fully customizable  
-- 🛠️ Easy to deploy anywhere  
-- 🔒 Stable & production ready  
-
----
-
-## 🌐 Floating Identity (Brand Flow)
+## 🚀 Live AI Preview
 
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=30&pause=700&color=00FF99&center=true&width=900&lines=PrimeSA...;Your+Bot...;Your+Rules...;Professor+Sahil..." />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&pause=700&color=00FF99&center=true&width=900&lines=🧠+AI+Thinking+Mode...;🔍+Analyzing+Question...;💡+Generating+Best+Answer...;⚡+PrimeSA_Bot+Responding..." />
 
 </div>
 
 ---
 
-## ⚙️ Quick Access
+## 📊 GitHub Dashboard
+
+<div align="center">
+
+<img src="https://github-readme-stats.vercel.app/api?username=sahillume&show_icons=true&theme=tokyonight" width="48%" />
+<img src="https://github-readme-streak-stats.herokuapp.com/?user=sahillume&theme=tokyonight" width="48%" />
+
+</div>
+
+---
+
+## ⚙️ Quick Access Panel
 
 | Platform | Link |
 |----------|------|
@@ -76,6 +76,24 @@ It is designed to be:
 
 ---
 
+## 🚀 One Click Deploy (Premium)
+
+<div align="center">
+
+### ☁️ Katabump Deploy
+<a href="https://control.katabump.com/">
+  <img src="https://img.shields.io/badge/Deploy%20Now-Katabump-ff8800?style=for-the-badge" />
+</a>
+
+### 🟢 GitHub Clone
+<a href="https://github.com/sahillume/PrimeSA_Bot/fork">
+  <img src="https://img.shields.io/badge/Fork%20Repository-Click%20Here-181717?style=for-the-badge&logo=github" />
+</a>
+
+</div>
+
+---
+
 ## 📦 Installation
 
 ```bash
@@ -83,31 +101,36 @@ git clone https://github.com/sahillume/PrimeSA_Bot.git
 cd PrimeSA_Bot
 npm install
 node index.js
-⚙️ Deployment (Katabump Panel)
-🔗 Open Panel
+⚙️ Deployment Steps
+🟠 Step 1: Open Katabump
 
 👉 https://control.katabump.com/
 
-📌 Steps:
-Login to panel
+📦 Step 2: Upload Bot
 Create server
-Upload bot files
-Extract ZIP
+Upload ZIP
+Extract files
+▶️ Step 3: Start Bot
 Click Start
-🧠 AI Features
-🤖 .gpt → AI Chat
-🧠 .gemini → Smart fallback AI
+Watch logs
+Bot goes online
+🧠 AI System Features
+🤖 .gpt → Smart AI Chat
+🧠 .gemini → Multi API fallback
 ⚡ .ai → Auto intelligent mode
-🧠 Thinking Mode simulation
-🔄 Multi API failover system
-✨ Features
-📱 WhatsApp Multi Device Support
-⚡ Fast response system
-🧠 AI chat system
+🧠 Thinking Mode animation
+🔄 API failover system
+⏱️ Response time tracking
+✨ Core Features
+📱 WhatsApp Multi-Device Support
+⚡ Ultra fast response system
 🔧 Modular command system
+🧠 AI powered chat system
+🧹 Auto memory cleanup
 🔒 Stable session handling
-🧹 Auto cleanup system
 📡 Easy customization
+🌐 Live Identity Flow
+<div align="center"> <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=28&pause=600&color=00FFFF&center=true&width=900&lines=PrimeSA...;Your+Bot...;Your+Rules...;Professor+Sahil...;Built+for+Developers..." /> </div>
 📞 Official Links
 WhatsApp Channel: https://whatsapp.com/channel/0029VbCIUrC4tRrmjdI9QM1x
 YouTube: https://youtube.com/@professorsahil-m7q?si=DXed6qhMosB_JQyL
@@ -115,16 +138,16 @@ GitHub: https://github.com/sahillume
 Katabump Panel: https://control.katabump.com/
 ⚠️ Warning
 
-This bot is for educational purposes only.
+This project is for educational purposes only.
 
-Not affiliated with WhatsApp
-Use at your own risk
-Do not spam or misuse
+Not affiliated with WhatsApp Inc.
+Use responsibly
+No spam or abuse
 ❤️ Credits
 Professor Sahil — Creator & Developer
-Baileys — WhatsApp library
-Katabump — Hosting platform
-Open-source contributors
+Baileys — WhatsApp Library
+Katabump — Hosting Platform
+Open-source community
 <div align="center">
 ⚡ PrimeSA_Bot
 🚀 Your Bot • Your Rules • Professor Sahil
