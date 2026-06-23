@@ -260,107 +260,7 @@ const buildComparableIds = (jid) => {
         variants.add(jidEncode(pnUser, pnServer));
       }
     }
-
-    // Handle List responses (Baileys list message selection)
-    const listResp = content.listResponseMessage || msg.message?.listResponseMessage;
-    if (listResp) {
-      const selectedRowId = listResp.singleSelectReply?.selectedRowId || listResp.selectedRowId || listResp.singleSelectReply?.rowId;
-      if (selectedRowId) {
-        try {
-          // Execute command rows created by the menu (menu_cmd:<name>)
-          if (selectedRowId.startsWith('menu_cmd:')) {
-            const cmdName = selectedRowId.split(':')[1];
-            const cmd = commands.get(cmdName);
-            if (cmd) {
-              await cmd.execute(sock, msg, [], {
-                from,
-                sender,
-                isGroup,
-                groupMetadata,
-                isOwner: senderIsOwner,
-                isAdmin: senderIsAdmin,
-                isBotAdmin: botIsAdmin,
-                isMod: senderIsMod,
-                reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
-                react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
-              });
-            } else {
-              await sock.sendMessage(from, { text: `Unknown command: ${cmdName}` }, { quoted: msg });
-            }
-            return;
-          }
-
-          // Pagination handler: menu_page:<category>:<page>
-          if (selectedRowId.startsWith('menu_page:')) {
-            const parts = selectedRowId.split(':');
-            const category = (parts[1] || '').toLowerCase();
-            const page = Math.max(1, parseInt(parts[2]) || 1);
-
-            // Build category list with permission filtering
-            const listItems = [];
-            commands.forEach((cmd, name) => {
-              if (cmd.name !== name) return; // skip aliases
-              if ((cmd.ownerOnly && !senderIsOwner) || (cmd.adminOnly && !senderIsAdmin && !senderIsOwner) || (cmd.modOnly && !senderIsMod && !senderIsOwner)) return;
-              const cat = (cmd.category || 'other').toLowerCase();
-              if (cat === category) listItems.push(cmd);
-            });
-
-            if (listItems.length === 0) {
-              await sock.sendMessage(from, { text: `No commands available for category: ${category}` }, { quoted: msg });
-              return;
-            }
-
-            const pageSize = 20;
-            const totalPages = Math.max(1, Math.ceil(listItems.length / pageSize));
-            const pageIndex = Math.min(page, totalPages);
-            const slice = listItems.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
-
-            const rows = slice.map(c => ({ title: `${config.prefix}${c.name}`, rowId: `menu_cmd:${c.name}`, description: c.description || '' }));
-            if (pageIndex > 1) rows.push({ title: '⬅️ Previous Page', rowId: `menu_page:${category}:${pageIndex - 1}`, description: 'Go to previous page' });
-            if (pageIndex < totalPages) rows.push({ title: '➡️ Next Page', rowId: `menu_page:${category}:${pageIndex + 1}`, description: 'Go to next page' });
-
-            const sections = [{ title: `${category.toUpperCase()} Commands (Page ${pageIndex}/${totalPages})`, rows }];
-            const listMessage = {
-              title: `${config.botName} • ${category.toUpperCase()}`,
-              text: `Select a command (Page ${pageIndex} of ${totalPages})`,
-              buttonText: 'Select Command',
-              footer: `Powered by ${config.botName}`,
-              sections
-            };
-
-            await sock.sendMessage(from, { listMessage }, { quoted: msg });
-            return;
-          }
-
-          // If the rowId is a prefixed command like '.ping arg', simulate execution
-          if (selectedRowId.startsWith(config.prefix)) {
-            const parts = selectedRowId.slice(config.prefix.length).trim().split(/\s+/);
-            const name = parts.shift().toLowerCase();
-            const cmd = commands.get(name);
-            if (cmd) {
-              await cmd.execute(sock, msg, parts, {
-                from,
-                sender,
-                isGroup,
-                groupMetadata,
-                isOwner: senderIsOwner,
-                isAdmin: senderIsAdmin,
-                isBotAdmin: botIsAdmin,
-                isMod: senderIsMod,
-                reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
-                react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
-              });
-            } else {
-              await sock.sendMessage(from, { text: `Unknown command: ${name}` }, { quoted: msg });
-            }
-            return;
-          }
-        } catch (e) {
-          console.error('Error handling list response:', e);
-        }
-      }
-    }
-
+    
     return Array.from(variants);
   } catch (error) {
     return [jid];
@@ -479,12 +379,12 @@ const handleMessage = async (sock, msg) => {
     
     if (!msg.message) return;
     
-      const from = msg.key.remoteJid;
+    const from = msg.key.remoteJid;
     
     // System message filter - ignore broadcast/status/newsletter messages
-      if (isSystemJid(from) && from !== 'status@broadcast') {
-          return;
-      }
+    if (isSystemJid(from)) {
+      return; // Silently ignore system messages
+    }
 
       // 🔥 AUTO STATUS SYSTEM (VIEW + REACT)
       try {
@@ -496,8 +396,8 @@ const handleMessage = async (sock, msg) => {
     // Auto-React System
     try {
       // Clear cache to get fresh config values
-
-
+      delete require.cache[require.resolve('./config')];
+      const config = require('./config');
 
       if (config.autoReact && msg.message && !msg.key.fromMe) {
         const content = msg.message.ephemeralMessage?.message || msg.message;
@@ -555,24 +455,11 @@ const handleMessage = async (sock, msg) => {
     
     // Fetch group metadata immediately if it's a group
     const groupMetadata = isGroup ? await getGroupMetadata(sock, from) : null;
-
-    // Cache common/group-related values per message to avoid repeated async calls
-    const groupSettings = isGroup ? database.getGroupSettings(from) : {};
-
-    // Precompute role/permission flags once for this message
-    const senderIsOwner = isOwner(sender);
-    const senderIsAdmin = isGroup ? await isAdmin(sock, sender, from, groupMetadata) : false;
-    const botIsAdmin = isGroup ? await isBotAdmin(sock, from, groupMetadata) : false;
-    const senderIsMod = isMod(sender);
-    const senderIsOwner = isOwner(sender);
-    const senderIsMod = isMod(sender);
-    const senderIsAdmin = isGroup ? await isAdmin(sock, sender, from, groupMetadata) : false;
-    const botIsAdmin = isGroup ? await isBotAdmin(sock, from, groupMetadata) : false;
     
     // Anti-group mention protection (check BEFORE prefix check, as these are non-command messages)
     if (isGroup) {
       // Debug logging to confirm we're trying to call the handler
-      // use cached groupSettings
+      const groupSettings = database.getGroupSettings(from);
       // Debug log removed
       if (groupSettings.antigroupmention) {
         // Debug log removed
@@ -608,10 +495,10 @@ const handleMessage = async (sock, msg) => {
             sender,
             isGroup,
             groupMetadata,
-            isOwner: senderIsOwner,
-            isAdmin: senderIsAdmin,
-            isBotAdmin: botIsAdmin,
-            isMod: senderIsMod,
+            isOwner: isOwner(sender),
+            isAdmin: await isAdmin(sock, sender, from, groupMetadata),
+            isBotAdmin: await isBotAdmin(sock, from, groupMetadata),
+            isMod: isMod(sender),
             reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
             react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
           });
@@ -626,29 +513,10 @@ const handleMessage = async (sock, msg) => {
             sender,
             isGroup,
             groupMetadata,
-            isOwner: senderIsOwner,
-            isAdmin: senderIsAdmin,
-            isBotAdmin: botIsAdmin,
-            isMod: senderIsMod,
-            reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
-            react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
-          });
-        }
-        return;
-      } else if (buttonId && buttonId.startsWith('btn_menu_')) {
-        // Category buttons from the new menu (e.g., btn_menu_general, btn_menu_fun, btn_menu_admin)
-        const category = buttonId.split('_')[2];
-        const menuCmd = commands.get('menu');
-        if (menuCmd) {
-          await menuCmd.execute(sock, msg, [category], {
-            from,
-            sender,
-            isGroup,
-            groupMetadata,
-            isOwner: senderIsOwner,
-            isAdmin: senderIsAdmin,
-            isBotAdmin: botIsAdmin,
-            isMod: senderIsMod,
+            isOwner: isOwner(sender),
+            isAdmin: await isAdmin(sock, sender, from, groupMetadata),
+            isBotAdmin: await isBotAdmin(sock, from, groupMetadata),
+            isMod: isMod(sender),
             reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
             react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
           });
@@ -663,10 +531,10 @@ const handleMessage = async (sock, msg) => {
             sender,
             isGroup,
             groupMetadata,
-            isOwner: senderIsOwner,
-            isAdmin: senderIsAdmin,
-            isBotAdmin: botIsAdmin,
-            isMod: senderIsMod,
+            isOwner: isOwner(sender),
+            isAdmin: await isAdmin(sock, sender, from, groupMetadata),
+            isBotAdmin: await isBotAdmin(sock, from, groupMetadata),
+            isMod: isMod(sender),
             reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
             react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
           });
@@ -691,11 +559,13 @@ const handleMessage = async (sock, msg) => {
     
     // Check antiall protection (owner only feature)
     if (isGroup) {
-      // use cached groupSettings
+      const groupSettings = database.getGroupSettings(from);
       if (groupSettings.antiall) {
-        const senderIsOwner_local = senderIsOwner;
-
-        if (!senderIsAdmin && !senderIsOwner_local) {
+        const senderIsAdmin = await isAdmin(sock, sender, from, groupMetadata);
+        const senderIsOwner = isOwner(sender);
+        
+        if (!senderIsAdmin && !senderIsOwner) {
+          const botIsAdmin = await isBotAdmin(sock, from, groupMetadata);
           if (botIsAdmin) {
             await sock.sendMessage(from, { delete: msg.key });
             return;
@@ -707,45 +577,45 @@ const handleMessage = async (sock, msg) => {
       if (groupSettings.antitag && !msg.key.fromMe) {
         const ctx = content.extendedTextMessage?.contextInfo;
         const mentionedJids = ctx?.mentionedJid || [];
-
+        
         const messageText = (
           body ||
           content.imageMessage?.caption ||
           content.videoMessage?.caption ||
           ''
         );
-
+        
         const textMentions = messageText.match(/@[\d+\s\-()~.]+/g) || [];
         const numericMentions = messageText.match(/@\d{10,}/g) || [];
-
+        
         const uniqueNumericMentions = new Set();
         numericMentions.forEach((mention) => {
           const numMatch = mention.match(/@(\d+)/);
           if (numMatch) uniqueNumericMentions.add(numMatch[1]);
         });
-
+        
         const mentionedJidCount = mentionedJids.length;
         const numericMentionCount = uniqueNumericMentions.size;
         const totalMentions = Math.max(mentionedJidCount, numericMentionCount);
-
+        
         if (totalMentions >= 3) {
           try {
             const participants = groupMetadata.participants || [];
             const mentionThreshold = Math.max(3, Math.ceil(participants.length * 0.5));
             const hasManyNumericMentions = numericMentionCount >= 10 ||
               (numericMentionCount >= 5 && numericMentionCount >= mentionThreshold);
-
+            
             if (totalMentions >= mentionThreshold || hasManyNumericMentions) {
-              // use cached flags
-              const senderIsOwner_local = senderIsOwner;
-
-              if (!senderIsAdmin && !senderIsOwner_local) {
+              const senderIsAdmin = await isAdmin(sock, sender, from, groupMetadata);
+              const senderIsOwner = isOwner(sender);
+              
+              if (!senderIsAdmin && !senderIsOwner) {
                 const action = (groupSettings.antitagAction || 'delete').toLowerCase();
-
+                
                 if (action === 'delete') {
                   try {
                     await sock.sendMessage(from, { delete: msg.key });
-                    await sock.sendMessage(from, {
+                    await sock.sendMessage(from, { 
                       text: '⚠️ *Tagall Detected!*',
                       mentions: [sender]
                     }, { quoted: msg });
@@ -758,7 +628,8 @@ const handleMessage = async (sock, msg) => {
                   } catch (e) {
                     console.error('Failed to delete tagall message:', e);
                   }
-
+                  
+                  const botIsAdmin = await isBotAdmin(sock, from, groupMetadata);
                   if (botIsAdmin) {
                     try {
                       await sock.groupParticipantsUpdate(from, [sender], 'remove');
@@ -782,11 +653,23 @@ const handleMessage = async (sock, msg) => {
       }
     }
     
-    // (Duplicate antigroupmention invocation removed — handled once above)
+    // Anti-group mention protection (check BEFORE prefix check, as these are non-command messages)
+    if (isGroup) {
+      // Debug logging to confirm we're trying to call the handler
+      const groupSettings = database.getGroupSettings(from);
+      if (groupSettings.antigroupmention) {
+        // Debug log removed
+      }
+      try {
+        await handleAntigroupmention(sock, msg, groupMetadata);
+      } catch (error) {
+        console.error('Error in antigroupmention handler:', error);
+      }
+    }
     
     // AutoSticker feature - convert images/videos to stickers automatically
     if (isGroup) { // Process all messages in groups (including bot's own messages)
-      // use cached groupSettings
+      const groupSettings = database.getGroupSettings(from);
       if (groupSettings.autosticker) {
         const mediaMessage = content?.imageMessage || content?.videoMessage;
         
@@ -798,25 +681,20 @@ const handleMessage = async (sock, msg) => {
               // Import sticker command logic
               const stickerCmd = commands.get('sticker');
               if (stickerCmd) {
-                // Don't autoconvert bot's own messages to avoid loops
-                if (msg.key.fromMe) {
-                  // skip autosticker for outgoing messages
-                } else {
-                  // Execute sticker conversion silently using cached flags
-                  await stickerCmd.execute(sock, msg, [], {
-                    from,
-                    sender,
-                    isGroup,
-                    groupMetadata,
-                    isOwner: senderIsOwner,
-                    isAdmin: senderIsAdmin,
-                    isBotAdmin: botIsAdmin,
-                    isMod: senderIsMod,
-                    reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
-                    react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
-                  });
-                  return; // Don't process as command after auto-converting
-                }
+                // Execute sticker conversion silently
+                await stickerCmd.execute(sock, msg, [], {
+                  from,
+                  sender,
+                  isGroup,
+                  groupMetadata,
+                  isOwner: isOwner(sender),
+                  isAdmin: await isAdmin(sock, sender, from, groupMetadata),
+                  isBotAdmin: await isBotAdmin(sock, from, groupMetadata),
+                  isMod: isMod(sender),
+                  reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
+                  react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
+                });
+                return; // Don't process as command after auto-converting
               }
             } catch (error) {
               console.error('[AutoSticker Error]:', error);
@@ -839,10 +717,10 @@ const handleMessage = async (sock, msg) => {
             sender,
             isGroup,
             groupMetadata,
-            isOwner: senderIsOwner,
-            isAdmin: senderIsAdmin,
-            isBotAdmin: botIsAdmin,
-            isMod: senderIsMod,
+            isOwner: isOwner(sender),
+            isAdmin: await isAdmin(sock, sender, from, groupMetadata),
+            isBotAdmin: await isBotAdmin(sock, from, groupMetadata),
+            isMod: isMod(sender),
             reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
             react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
           });
@@ -871,10 +749,10 @@ const handleMessage = async (sock, msg) => {
             sender,
             isGroup,
             groupMetadata,
-            isOwner: senderIsOwner,
-            isAdmin: senderIsAdmin,
-            isBotAdmin: botIsAdmin,
-            isMod: senderIsMod,
+            isOwner: isOwner(sender),
+            isAdmin: await isAdmin(sock, sender, from, groupMetadata),
+            isBotAdmin: await isBotAdmin(sock, from, groupMetadata),
+            isMod: isMod(sender),
             reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
             react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
           });
@@ -898,16 +776,16 @@ const handleMessage = async (sock, msg) => {
     if (!command) return;
     
     // Check self mode (private mode) - only owner can use commands
-    if (config.selfMode && !senderIsOwner) {
+    if (config.selfMode && !isOwner(sender)) {
       return;
     }
     
     // Permission checks
-    if (command.ownerOnly && !senderIsOwner) {
+    if (command.ownerOnly && !isOwner(sender)) {
       return sock.sendMessage(from, { text: config.messages.ownerOnly }, { quoted: msg });
     }
-
-    if (command.modOnly && !senderIsMod && !senderIsOwner) {
+    
+    if (command.modOnly && !isMod(sender) && !isOwner(sender)) {
       return sock.sendMessage(from, { text: '🔒 This command is only for moderators!' }, { quoted: msg });
     }
     
@@ -919,11 +797,12 @@ const handleMessage = async (sock, msg) => {
       return sock.sendMessage(from, { text: config.messages.privateOnly }, { quoted: msg });
     }
     
-    if (command.adminOnly && !senderIsAdmin && !senderIsOwner) {
+    if (command.adminOnly && !(await isAdmin(sock, sender, from, groupMetadata)) && !isOwner(sender)) {
       return sock.sendMessage(from, { text: config.messages.adminOnly }, { quoted: msg });
     }
-
+    
     if (command.botAdminNeeded) {
+      const botIsAdmin = await isBotAdmin(sock, from, groupMetadata);
       if (!botIsAdmin) {
         return sock.sendMessage(from, { text: config.messages.botAdminNeeded }, { quoted: msg });
       }
@@ -942,10 +821,10 @@ const handleMessage = async (sock, msg) => {
       sender,
       isGroup,
       groupMetadata,
-      isOwner: senderIsOwner,
-      isAdmin: senderIsAdmin,
-      isBotAdmin: botIsAdmin,
-      isMod: senderIsMod,
+      isOwner: isOwner(sender),
+      isAdmin: await isAdmin(sock, sender, from, groupMetadata),
+      isBotAdmin: await isBotAdmin(sock, from, groupMetadata),
+      isMod: isMod(sender),
       reply: (text) => sock.sendMessage(from, { text }, { quoted: msg }),
       react: (emoji) => sock.sendMessage(from, { react: { text: emoji, key: msg.key } })
     });
@@ -1119,8 +998,8 @@ const handleGroupUpdate = async (sock, update) => {
           // Construct API URL for welcome image
           const apiUrl = `https://api.some-random-api.com/welcome/img/7/gaming4?type=join&textcolor=white&username=${encodeURIComponent(displayName)}&guildName=${encodeURIComponent(groupName)}&memberCount=${groupMetadata.participants.length}&avatar=${encodeURIComponent(profilePicUrl)}`;
           
-          // Download the welcome image (with timeout to avoid hanging)
-          const imageResponse = await axios.get(apiUrl, { responseType: 'arraybuffer', timeout: 8000 });
+          // Download the welcome image
+          const imageResponse = await axios.get(apiUrl, { responseType: 'arraybuffer' });
           const imageBuffer = Buffer.from(imageResponse.data);
           
           // Send the welcome image with formatted caption
@@ -1245,8 +1124,8 @@ const handleGroupUpdate = async (sock, update) => {
           // Construct API URL for goodbye image (using leave type)
           const apiUrl = `https://api.some-random-api.com/welcome/img/7/gaming4?type=leave&textcolor=white&username=${encodeURIComponent(displayName)}&guildName=${encodeURIComponent(groupName)}&memberCount=${groupMetadata.participants.length}&avatar=${encodeURIComponent(profilePicUrl)}`;
           
-          // Download the goodbye image (with timeout to avoid hanging)
-          const imageResponse = await axios.get(apiUrl, { responseType: 'arraybuffer', timeout: 8000 });
+          // Download the goodbye image
+          const imageResponse = await axios.get(apiUrl, { responseType: 'arraybuffer' });
           const imageBuffer = Buffer.from(imageResponse.data);
           
           // Send the goodbye image with caption
@@ -1300,7 +1179,7 @@ const handleAntilink = async (sock, msg, groupMetadata) => {
                   msg.message?.imageMessage?.caption || 
                   msg.message?.videoMessage?.caption || '';
     
-    // Comprehensive link detection - matches links with or without protocols
+  // Comprehensive link detection - matches links with or without protocols
     // Matches: https://t.me/..., http://wa.me/..., t.me/..., wa.me/..., google.com, telegram.com, etc.
     // Pattern breakdown:
     // 1. (https?:\/\/)? - Optional http:// or https://
