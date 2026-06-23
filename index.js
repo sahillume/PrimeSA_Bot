@@ -192,34 +192,6 @@ async function startBot() {
     const sessionFolder = `./${config.sessionName}`;
     const sessionFile = path.join(sessionFolder, 'creds.json');
 
-    // Check if sessionID is provided and process PrimeSA_Bot! format session
-    if (config.sessionID && config.sessionID.startsWith('PrimeSA_Bot!')) {
-        try {
-            const [header, b64data] = config.sessionID.split('!');
-
-            if (header !== 'PrimeSA_Bot' || !b64data) {
-                throw new Error("❌ Invalid session format. Expected 'PrimeSA_Bot!.....'");
-            }
-
-            const cleanB64 = b64data.replace('...', '');
-            const compressedData = Buffer.from(cleanB64, 'base64');
-            const decompressedData = zlib.gunzipSync(compressedData);
-
-            // Ensure session folder exists
-            if (!fs.existsSync(sessionFolder)) {
-                fs.mkdirSync(sessionFolder, { recursive: true });
-            }
-
-            // Write decompressed session data to creds.json
-            fs.writeFileSync(sessionFile, decompressedData, 'utf8');
-            console.log('📡 Session : 🔑 Retrieved from PrimeSA_Bot Session');
-
-        } catch (e) {
-        console.error('📡 Session : ❌ Error processing PrimeSA_Bot session:', e.message);
-            // Continue with normal QR flow if session processing fails
-        }
-    }
-
     const { state, saveCreds } = await useMultiFileAuthState(sessionFolder);
     const { version } = await fetchLatestBaileysVersion();
 
