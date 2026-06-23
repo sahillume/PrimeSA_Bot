@@ -4,19 +4,18 @@
 
 module.exports = {
     // Bot Owner Configuration
-    ownerNumber: ['27835515085','27724469823'], // Add your number without + or spaces (e.g., 2783551XXXX)
+    ownerNumber: ['27724469823'], // Add your number without + or spaces (e.g., 2783551XXXX)
     ownerName: ['Professor', 'Sahil'], // Owner names corresponding to ownerNumber array
     
     // Bot Configuration
     botName: 'PrimeSA_Bot',
     prefix: '.',
     sessionName: 'session',
-    sessionID: process.env.SESSION_ID || '',
     newsletterJid: '120363406672648713@newsletter', // Newsletter JID for menu forwarding
-    updateZipUrl: 'https://github.com/sahillume/PrimeBot/archive/refs/heads/main.zip', // URL to latest code zip for .update command
+    updateZipUrl: 'https://github.com/sahillume/PrimeSA_Bot/archive/refs/heads/main.zip',
     
     // Sticker Configuration
-    packname: 'PrimeSA_Bot',
+    packname: 'PrimeSA_Bot • Professor Sahil',
     
     // Bot Behavior
     selfMode: false, // Private mode - only owner can use commands
@@ -81,7 +80,7 @@ module.exports = {
     
     // Social Links (optional)
     social: {
-        github: 'https://github.com/sahillume/PrimeBot',
+        github: 'https://github.com/sahillume/PrimeSA_Bot',
       youtube: 'https://youtube.com/@professorsahil-m7q?si=ZXZpSGxNwQaDy0J3'
     }
 };
